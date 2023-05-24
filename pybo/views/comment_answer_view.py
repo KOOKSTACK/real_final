@@ -43,6 +43,7 @@ def comment_modify_answer(request, comment_id):
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             comment = form.save(commit=False)
+            comment.modify_count += 1
             comment.author = request.user
             comment.modify_date = timezone.now()
             comment.save()
