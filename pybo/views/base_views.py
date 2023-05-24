@@ -43,6 +43,14 @@ def detail(request, question_id):
     """
     pybo 내용 출력
     """
-    question = get_object_or_404(Question, pk=question_id)
-    context = {'question': question}
+    # question = Question.objects. get(id = question_id)
+    question = get_object_or_404(Question, pk = question_id)
+
+    comment_page = request.GET.get("page", "1") # 페이징에서 보여줄 페이지 1번부터 시작
+    comment_list = question.comment_set.order_by("-create_date") #-- 해당 페이지에 있는 댓글만 가져옴
+   
+    paginator = Paginator(comment_list, 5) #-- 5개씩 
+    page_obj = paginator.get_page(comment_page)
+    
+    context = {'question': question, 'comment_list' : page_obj, }    
     return render(request, 'pybo/question_detail.html', context)
